@@ -15,7 +15,7 @@ gsap.ticker.lagSmoothing(0);
 var filterButton = document.querySelector(".opens-filter");
 if (filterButton) {
 filterButton.addEventListener("click", function() {
-  localStorage.setItem("triggerClick", "true");
+localStorage.setItem("triggerClick", "true");
 });
 }
 
@@ -24,7 +24,7 @@ filterButton.addEventListener("click", function() {
 // -----------------------------------------
 if (window.Webflow && typeof Webflow.push === "function") {
 Webflow.push(function() {
-  $('.copyright-year').text(new Date().getFullYear());
+$('.copyright-year').text(new Date().getFullYear());
 });
 }
 
@@ -33,53 +33,53 @@ Webflow.push(function() {
 // -----------------------------------------
 (function() {
 const cursorElements = [
-  {
-    className: "button-right",
-    imageUrl: "https://cdn.prod.website-files.com/66bef0bef6cb13624d51d95b/66cedc79aeb8a340f1671630_slider-next.svg"
-  },
-  {
-    className: "button-left",
-    imageUrl: "https://cdn.prod.website-files.com/66bef0bef6cb13624d51d95b/66cedc79bc5b2155823ab0df_slider-prev.svg"
-  }
+{
+  className: "button-right",
+  imageUrl: "https://cdn.prod.website-files.com/66bef0bef6cb13624d51d95b/66cedc79aeb8a340f1671630_slider-next.svg"
+},
+{
+  className: "button-left",
+  imageUrl: "https://cdn.prod.website-files.com/66bef0bef6cb13624d51d95b/66cedc79bc5b2155823ab0df_slider-prev.svg"
+}
 ];
 
 cursorElements.forEach(function(element) {
-  const cursorImage = document.createElement("img");
-  cursorImage.src = element.imageUrl;
-  cursorImage.classList.add("cursor-image");
-  document.body.appendChild(cursorImage);
+const cursorImage = document.createElement("img");
+cursorImage.src = element.imageUrl;
+cursorImage.classList.add("cursor-image");
+document.body.appendChild(cursorImage);
 
-  let targetX = 0, targetY = 0;
-  document.addEventListener("mousemove", function(e) {
-    targetX = e.clientX;
-    targetY = e.clientY;
-  });
+let targetX = 0, targetY = 0;
+document.addEventListener("mousemove", function(e) {
+  targetX = e.clientX;
+  targetY = e.clientY;
+});
 
-  function updateCursor() {
-    const currentX = parseFloat(cursorImage.style.left) || 0;
-    const currentY = parseFloat(cursorImage.style.top) || 0;
-    const dx = targetX - currentX;
-    const dy = targetY - currentY;
-    const vx = dx * 0.3;
-    const vy = dy * 0.3;
-    cursorImage.style.position = "absolute";
-    cursorImage.style.left = currentX + vx + "px";
-    cursorImage.style.top = currentY + vy + "px";
-    requestAnimationFrame(updateCursor);
+function updateCursor() {
+  const currentX = parseFloat(cursorImage.style.left) || 0;
+  const currentY = parseFloat(cursorImage.style.top) || 0;
+  const dx = targetX - currentX;
+  const dy = targetY - currentY;
+  const vx = dx * 0.3;
+  const vy = dy * 0.3;
+  cursorImage.style.position = "absolute";
+  cursorImage.style.left = currentX + vx + "px";
+  cursorImage.style.top = currentY + vy + "px";
+  requestAnimationFrame(updateCursor);
+}
+updateCursor();
+
+// Set hover effects for elements (only for .for-rooms, .for-gallery, or .for-boxed and excluding .for-reviews or for-booking-food)
+document.querySelectorAll(`.${element.className}`).forEach(function(el) {
+  if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, for-booking-food, for-boxed")) {
+    el.addEventListener("mouseenter", function() {
+      cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
+    });
+    el.addEventListener("mouseleave", function() {
+      cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
+    });
   }
-  updateCursor();
-
-  // Set hover effects for elements (only for .for-rooms, .for-gallery, or .for-boxed and excluding .for-reviews or for-booking-food)
-  document.querySelectorAll(`.${element.className}`).forEach(function(el) {
-    if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, for-booking-food, for-boxed")) {
-      el.addEventListener("mouseenter", function() {
-        cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
-      });
-      el.addEventListener("mouseleave", function() {
-        cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
-      });
-    }
-  });
+});
 });
 })();
 
@@ -88,18 +88,18 @@ cursorElements.forEach(function(element) {
 // -----------------------------------------
 if (window.Webflow && Webflow.env && Webflow.env("editor")) {
 const muteVideos = () => {
-  document.querySelectorAll("video").forEach(video => {
-    if (!video.hasAttribute("muted")) {
-      video.muted = true;
-      video.setAttribute("muted", ""); // force native attribute
-    }
-  });
+document.querySelectorAll("video").forEach(video => {
+  if (!video.hasAttribute("muted")) {
+    video.muted = true;
+    video.setAttribute("muted", ""); // force native attribute
+  }
+});
 };
 
 // Initial mute call and observe for new videos
 muteVideos();
 const observer = new MutationObserver(() => {
-  muteVideos();
+muteVideos();
 });
 observer.observe(document.body, { childList: true, subtree: true });
 }
@@ -110,125 +110,108 @@ observer.observe(document.body, { childList: true, subtree: true });
 (function initNavLinks() {
 // Update active nav link styles on scroll
 document.addEventListener("scroll", function() {
-  const navLinks = document.querySelectorAll(".anchor-link");
-  navLinks.forEach(navLink => {
-    const label = navLink.querySelector(".label");
-    const underline = navLink.querySelector(".underline");
-    if (navLink.classList.contains("w--current")) {
-      if (label) {
-        label.classList.remove("white");
-        label.classList.add("active");
-      }
-      if (underline) {
-        underline.style.display = "block";
-      }
-    } else {
-      if (label) {
-        label.classList.remove("active");
-        label.classList.add("white");
-      }
-      if (underline) {
-        underline.style.display = "none";
-      }
+const navLinks = document.querySelectorAll(".anchor-link");
+navLinks.forEach(navLink => {
+  const label = navLink.querySelector(".label");
+  const underline = navLink.querySelector(".underline");
+  if (navLink.classList.contains("w--current")) {
+    if (label) {
+      label.classList.remove("white");
+      label.classList.add("active");
     }
-  });
+    if (underline) {
+      underline.style.display = "block";
+    }
+  } else {
+    if (label) {
+      label.classList.remove("active");
+      label.classList.add("white");
+    }
+    if (underline) {
+      underline.style.display = "none";
+    }
+  }
+});
 });
 
 // Hover effects and smooth scrolling for navigation links
 const navLinks = document.querySelectorAll(".anchor-link");
 const isDesktop = window.innerWidth >= 992;
 if (isDesktop) {
-  navLinks.forEach(navLink => {
-    const underline = navLink.querySelector(".underline");
-    navLink.addEventListener("mouseenter", () => {
-      if (underline) underline.style.display = "block";
-    });
-    navLink.addEventListener("mouseleave", () => {
-      const label = navLink.querySelector(".label");
-      if (underline && !label.classList.contains("active")) {
-        underline.style.display = "none";
-      }
-    });
-  });
-}
 navLinks.forEach(navLink => {
-  navLink.addEventListener("click", function(e) {
-    const href = this.getAttribute("href");
-    if (href && href.startsWith("#")) {
-      const targetId = href.substring(1);
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        e.preventDefault();
-        const offset = window.innerWidth <= 991 ? 150 : 200;
-        const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({
-          top: elementTop,
-          behavior: "smooth"
-        });
-      }
+  const underline = navLink.querySelector(".underline");
+  navLink.addEventListener("mouseenter", () => {
+    if (underline) underline.style.display = "block";
+  });
+  navLink.addEventListener("mouseleave", () => {
+    const label = navLink.querySelector(".label");
+    if (underline && !label.classList.contains("active")) {
+      underline.style.display = "none";
     }
   });
+});
+}
+navLinks.forEach(navLink => {
+navLink.addEventListener("click", function(e) {
+  const href = this.getAttribute("href");
+  if (href && href.startsWith("#")) {
+    const targetId = href.substring(1);
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      e.preventDefault();
+      const offset = window.innerWidth <= 991 ? 150 : 200;
+      const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({
+        top: elementTop,
+        behavior: "smooth"
+      });
+    }
+  }
+});
 });
 })();
 
 // -----------------------------------------
 // Exit Intent Popup
 // -----------------------------------------
-(function() {
+
 const CookieService = {
   setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "; expires=" + date.toUTCString();
-    const path = "; path=/";
-    document.cookie = name + "=" + (value || "") + expires + path;
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      const expires = days ? '; expires=' + date.toUTCString() : '';
+      document.cookie = name + '=' + (value || '')  + expires + ';';
   },
+
   getCookie(name) {
-    const cookieValue = document.cookie
-      .split("; ")
-      .find(row => row.startsWith(name + "="))
-      ?.split("=")[1];
-    return cookieValue || null;
+      const cookieValue = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(name))
+          ?.split('=')[1];
+      return cookieValue || null;
   }
 };
 
 const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-if (!exitPopup) return;
 
-const showPopup = () => {
-  exitPopup.style.display = "flex";
-  CookieService.setCookie("exitIntentShown", true, 30);
-};
+const mouseEvent = e => {
+  const shouldShowExitIntent = 
+      !e.toElement && 
+      !e.relatedTarget &&
+      e.clientY < 10;
 
-const isTouchDevice = () => {
-  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
-};
-
-if (!CookieService.getCookie("exitIntentShown")) {
-  if (isTouchDevice()) {
-    setTimeout(showPopup, 2000);
-  } else {
-    const mouseEvent = e => {
-      const shouldShowExitIntent =
-            !e.toElement &&
-            !e.relatedTarget &&
-            e.clientY < 10;
-      if (shouldShowExitIntent) {
-        document.removeEventListener("mouseout", mouseEvent);
-        showPopup();
-      }
-    };
-    document.addEventListener("mouseout", mouseEvent);
+  if (shouldShowExitIntent) {
+      document.removeEventListener('mouseout', mouseEvent);
+      exitPopup.style.display = 'flex';
+      CookieService.setCookie('exitIntentShown', true, 30);
   }
+};
+
+if (!CookieService.getCookie('exitIntentShown')) {
+  document.addEventListener('mouseout', mouseEvent);
+  document.addEventListener('keydown', exit);
+  exitPopup.addEventListener('click', exit);
 }
-
-// Close popup only when clicking on the background, not the inner content
-exitPopup.addEventListener("click", e => {
-  if (e.target === exitPopup) {
-    exitPopup.style.display = "none";
-  }
-});
-})();
 
 
 // -----------------------------------------
@@ -237,67 +220,67 @@ exitPopup.addEventListener("click", e => {
 window.addEventListener("load", function() {
 // Marquee animation with scroll direction
 function initMarqueeScrollDirection() {
-  document.querySelectorAll("[data-marquee-scroll-direction-target]").forEach((marquee) => {
-    const marqueeContent = marquee.querySelector("[data-marquee-collection-target]");
-    const marqueeScroll = marquee.querySelector("[data-marquee-scroll-target]");
-    if (!marqueeContent || !marqueeScroll) return;
+document.querySelectorAll("[data-marquee-scroll-direction-target]").forEach((marquee) => {
+  const marqueeContent = marquee.querySelector("[data-marquee-collection-target]");
+  const marqueeScroll = marquee.querySelector("[data-marquee-scroll-target]");
+  if (!marqueeContent || !marqueeScroll) return;
 
-    const { marqueeSpeed: speed, marqueeDirection: direction, marqueeDuplicate: duplicate, marqueeScrollSpeed: scrollSpeed } = marquee.dataset;
-    const marqueeSpeedAttr = parseFloat(speed);
-    const marqueeDirectionAttr = direction === "right" ? 1 : -1;
-    const duplicateAmount = parseInt(duplicate || 0);
-    const scrollSpeedAttr = parseFloat(scrollSpeed);
-    const speedMultiplier = window.innerWidth < 479 ? 0.25 : window.innerWidth < 991 ? 0.5 : 1;
-    let marqueeSpeed = marqueeSpeedAttr * (marqueeContent.offsetWidth / window.innerWidth) * speedMultiplier;
+  const { marqueeSpeed: speed, marqueeDirection: direction, marqueeDuplicate: duplicate, marqueeScrollSpeed: scrollSpeed } = marquee.dataset;
+  const marqueeSpeedAttr = parseFloat(speed);
+  const marqueeDirectionAttr = direction === "right" ? 1 : -1;
+  const duplicateAmount = parseInt(duplicate || 0);
+  const scrollSpeedAttr = parseFloat(scrollSpeed);
+  const speedMultiplier = window.innerWidth < 479 ? 0.25 : window.innerWidth < 991 ? 0.5 : 1;
+  let marqueeSpeed = marqueeSpeedAttr * (marqueeContent.offsetWidth / window.innerWidth) * speedMultiplier;
 
-    marqueeScroll.style.marginLeft = `${scrollSpeedAttr * -1}%`;
-    marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
+  marqueeScroll.style.marginLeft = `${scrollSpeedAttr * -1}%`;
+  marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
 
-    if (duplicateAmount > 0) {
-      const fragment = document.createDocumentFragment();
-      for (let i = 0; i < duplicateAmount; i++) {
-        fragment.appendChild(marqueeContent.cloneNode(true));
-      }
-      marqueeScroll.appendChild(fragment);
+  if (duplicateAmount > 0) {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < duplicateAmount; i++) {
+      fragment.appendChild(marqueeContent.cloneNode(true));
     }
+    marqueeScroll.appendChild(fragment);
+  }
 
-    const marqueeItems = marquee.querySelectorAll("[data-marquee-collection-target]");
-    const animation = gsap.to(marqueeItems, {
-      xPercent: -100,
-      repeat: -1,
-      duration: marqueeSpeed,
-      ease: "linear"
-    }).totalProgress(0.5);
+  const marqueeItems = marquee.querySelectorAll("[data-marquee-collection-target]");
+  const animation = gsap.to(marqueeItems, {
+    xPercent: -100,
+    repeat: -1,
+    duration: marqueeSpeed,
+    ease: "linear"
+  }).totalProgress(0.5);
 
-    gsap.set(marqueeItems, { xPercent: marqueeDirectionAttr === 1 ? 100 : -100 });
-    animation.timeScale(marqueeDirectionAttr);
-    animation.play();
-    marquee.setAttribute("data-marquee-status", "normal");
+  gsap.set(marqueeItems, { xPercent: marqueeDirectionAttr === 1 ? 100 : -100 });
+  animation.timeScale(marqueeDirectionAttr);
+  animation.play();
+  marquee.setAttribute("data-marquee-status", "normal");
 
-    ScrollTrigger.create({
-      trigger: marquee,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: (self) => {
-        const isInverted = self.direction === 1;
-        const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
-        animation.timeScale(currentDirection);
-        marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
-      }
-    });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: marquee,
-        start: "0% 100%",
-        end: "100% 0%",
-        scrub: 0
-      }
-    });
-    const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
-    const scrollEnd = -scrollStart;
-    tl.fromTo(marqueeScroll, { x: `${scrollStart}vw` }, { x: `${scrollEnd}vw`, ease: "none" });
+  ScrollTrigger.create({
+    trigger: marquee,
+    start: "top bottom",
+    end: "bottom top",
+    onUpdate: (self) => {
+      const isInverted = self.direction === 1;
+      const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
+      animation.timeScale(currentDirection);
+      marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
+    }
   });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: marquee,
+      start: "0% 100%",
+      end: "100% 0%",
+      scrub: 0
+    }
+  });
+  const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
+  const scrollEnd = -scrollStart;
+  tl.fromTo(marqueeScroll, { x: `${scrollStart}vw` }, { x: `${scrollEnd}vw`, ease: "none" });
+});
 }
 initMarqueeScrollDirection();
 
@@ -305,88 +288,88 @@ initMarqueeScrollDirection();
 
 // Gallery slider
 new Swiper(".swiper.is-gallery", {
-  loop: true,
-  slidesPerView: 2,
-  centeredSlides: true,
-  speed: 800,
-  grabCursor: true,
-  parallax: true,
-  navigation: {
-    nextEl: ".button-right.for-gallery",
-    prevEl: ".button-left.for-gallery"
-  }
+loop: true,
+slidesPerView: 2,
+centeredSlides: true,
+speed: 800,
+grabCursor: true,
+parallax: true,
+navigation: {
+  nextEl: ".button-right.for-gallery",
+  prevEl: ".button-left.for-gallery"
+}
 });
 
 // Reviews slider
 new Swiper(".swiper.is-reviews", {
-  loop: true,
-  slidesPerView: 1,
-  speed: 800,
-  navigation: {
-    nextEl: ".button-right.for-reviews",
-    prevEl: ".button-left.for-reviews"
-  }
+loop: true,
+slidesPerView: 1,
+speed: 800,
+navigation: {
+  nextEl: ".button-right.for-reviews",
+  prevEl: ".button-left.for-reviews"
+}
 });
 
 // Food booking slider
 new Swiper(".swiper.is-booking-food", {
-  loop: true,
-  slidesPerView: 1,
-  speed: 800,
-  navigation: {
-    nextEl: ".button-right.for-booking-food",
-    prevEl: ".button-left.for-booking-food"
-  }
+loop: true,
+slidesPerView: 1,
+speed: 800,
+navigation: {
+  nextEl: ".button-right.for-booking-food",
+  prevEl: ".button-left.for-booking-food"
+}
 });
 
 // Booking reviews slider
 new Swiper(".swiper.is-booking-reviews", {
-  loop: true,
-  slidesPerView: 1,
-  spaceBetween: 16,
-  speed: 800,
-  autoplay: {
-    delay: 4000,
-    disableOnInteraction: false
-  }
+loop: true,
+slidesPerView: 1,
+spaceBetween: 16,
+speed: 800,
+autoplay: {
+  delay: 4000,
+  disableOnInteraction: false
+}
 });
 
 // Boxed sliders: Initialize based on parent column navigation buttons
 document.querySelectorAll(".swiper.is-boxed").forEach((slider) => {
-  const column = slider.closest(".column");
-  if (!column) return;
-  const nextButton = column.querySelector(".button-right");
-  const prevButton = column.querySelector(".button-left");
-  if (!nextButton || !prevButton) return;
-  new Swiper(slider, {
-    loop: true,
-    slidesPerView: 1,
-    spaceBetween: 0,
-    speed: 800,
-    navigation: {
-      nextEl: nextButton,
-      prevEl: prevButton
-    }
-  });
-});
-
-// Rooms slider with breakpoints
-new Swiper(".swiper.is-rooms", {
+const column = slider.closest(".column");
+if (!column) return;
+const nextButton = column.querySelector(".button-right");
+const prevButton = column.querySelector(".button-left");
+if (!nextButton || !prevButton) return;
+new Swiper(slider, {
   loop: true,
   slidesPerView: 1,
   spaceBetween: 0,
   speed: 800,
-  centeredSlides: true,
   navigation: {
-    nextEl: ".button-right.for-rooms",
-    prevEl: ".button-left.for-rooms"
-  },
-  breakpoints: {
-    991: {
-      slidesPerView: 2,
-      spaceBetween: 50
-    }
+    nextEl: nextButton,
+    prevEl: prevButton
   }
+});
+});
+
+// Rooms slider with breakpoints
+new Swiper(".swiper.is-rooms", {
+loop: true,
+slidesPerView: 1,
+spaceBetween: 0,
+speed: 800,
+centeredSlides: true,
+navigation: {
+  nextEl: ".button-right.for-rooms",
+  prevEl: ".button-left.for-rooms"
+},
+breakpoints: {
+  991: {
+    slidesPerView: 2,
+    spaceBetween: 50
+  }
+}
 });
 });
 });
