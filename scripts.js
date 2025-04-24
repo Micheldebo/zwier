@@ -72,12 +72,12 @@ updateCursor();
 // Set hover effects for elements (only for .for-rooms, .for-gallery, or .for-boxed and excluding .for-reviews or for-booking-food)
 document.querySelectorAll(`.${element.className}`).forEach(function(el) {
 if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, for-booking-food, for-boxed")) {
-  el.addEventListener("mouseenter", function() {
-    cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
-  });
-  el.addEventListener("mouseleave", function() {
-    cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
-  });
+el.addEventListener("mouseenter", function() {
+  cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
+});
+el.addEventListener("mouseleave", function() {
+  cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
+});
 }
 });
 });
@@ -90,8 +90,8 @@ if (window.Webflow && Webflow.env && Webflow.env("editor")) {
 const muteVideos = () => {
 document.querySelectorAll("video").forEach(video => {
 if (!video.hasAttribute("muted")) {
-  video.muted = true;
-  video.setAttribute("muted", ""); // force native attribute
+video.muted = true;
+video.setAttribute("muted", ""); // force native attribute
 }
 });
 };
@@ -115,21 +115,21 @@ navLinks.forEach(navLink => {
 const label = navLink.querySelector(".label");
 const underline = navLink.querySelector(".underline");
 if (navLink.classList.contains("w--current")) {
-  if (label) {
-    label.classList.remove("white");
-    label.classList.add("active");
-  }
-  if (underline) {
-    underline.style.display = "block";
-  }
+if (label) {
+  label.classList.remove("white");
+  label.classList.add("active");
+}
+if (underline) {
+  underline.style.display = "block";
+}
 } else {
-  if (label) {
-    label.classList.remove("active");
-    label.classList.add("white");
-  }
-  if (underline) {
-    underline.style.display = "none";
-  }
+if (label) {
+  label.classList.remove("active");
+  label.classList.add("white");
+}
+if (underline) {
+  underline.style.display = "none";
+}
 }
 });
 });
@@ -141,13 +141,13 @@ if (isDesktop) {
 navLinks.forEach(navLink => {
 const underline = navLink.querySelector(".underline");
 navLink.addEventListener("mouseenter", () => {
-  if (underline) underline.style.display = "block";
+if (underline) underline.style.display = "block";
 });
 navLink.addEventListener("mouseleave", () => {
-  const label = navLink.querySelector(".label");
-  if (underline && !label.classList.contains("active")) {
-    underline.style.display = "none";
-  }
+const label = navLink.querySelector(".label");
+if (underline && !label.classList.contains("active")) {
+  underline.style.display = "none";
+}
 });
 });
 }
@@ -155,17 +155,17 @@ navLinks.forEach(navLink => {
 navLink.addEventListener("click", function(e) {
 const href = this.getAttribute("href");
 if (href && href.startsWith("#")) {
-  const targetId = href.substring(1);
-  const targetEl = document.getElementById(targetId);
-  if (targetEl) {
-    e.preventDefault();
-    const offset = window.innerWidth <= 991 ? 150 : 200;
-    const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({
-      top: elementTop,
-      behavior: "smooth"
-    });
-  }
+const targetId = href.substring(1);
+const targetEl = document.getElementById(targetId);
+if (targetEl) {
+  e.preventDefault();
+  const offset = window.innerWidth <= 991 ? 150 : 200;
+  const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({
+    top: elementTop,
+    behavior: "smooth"
+  });
+}
 }
 });
 });
@@ -192,17 +192,16 @@ if (href && href.startsWith("#")) {
   };
 
   const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-
   if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
 
+  let shown = false;
+
   function showPopup() {
+      if (shown) return;
+      shown = true;
       exitPopup.style.display = 'flex';
       CookieService.setCookie('exitIntentShown', true, 30);
       document.removeEventListener('mouseout', handleMouseOut);
-  }
-
-  function hidePopup() {
-      exitPopup.style.display = 'none';
   }
 
   function handleMouseOut(e) {
@@ -210,14 +209,9 @@ if (href && href.startsWith("#")) {
       if (isLeavingTop) showPopup();
   }
 
-  function handleKeyDown(e) {
-      if (e.key === "Escape") hidePopup();
-  }
-
-  // Attach event listeners
+  // Show after 3 seconds if no intent detected yet
+  setTimeout(showPopup, 3000);
   document.addEventListener('mouseout', handleMouseOut);
-  document.addEventListener('keydown', handleKeyDown);
-  exitPopup.addEventListener('click', hidePopup);
 })();
 
 
@@ -244,19 +238,19 @@ marqueeScroll.style.marginLeft = `${scrollSpeedAttr * -1}%`;
 marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
 
 if (duplicateAmount > 0) {
-  const fragment = document.createDocumentFragment();
-  for (let i = 0; i < duplicateAmount; i++) {
-    fragment.appendChild(marqueeContent.cloneNode(true));
-  }
-  marqueeScroll.appendChild(fragment);
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < duplicateAmount; i++) {
+  fragment.appendChild(marqueeContent.cloneNode(true));
+}
+marqueeScroll.appendChild(fragment);
 }
 
 const marqueeItems = marquee.querySelectorAll("[data-marquee-collection-target]");
 const animation = gsap.to(marqueeItems, {
-  xPercent: -100,
-  repeat: -1,
-  duration: marqueeSpeed,
-  ease: "linear"
+xPercent: -100,
+repeat: -1,
+duration: marqueeSpeed,
+ease: "linear"
 }).totalProgress(0.5);
 
 gsap.set(marqueeItems, { xPercent: marqueeDirectionAttr === 1 ? 100 : -100 });
@@ -265,24 +259,24 @@ animation.play();
 marquee.setAttribute("data-marquee-status", "normal");
 
 ScrollTrigger.create({
-  trigger: marquee,
-  start: "top bottom",
-  end: "bottom top",
-  onUpdate: (self) => {
-    const isInverted = self.direction === 1;
-    const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
-    animation.timeScale(currentDirection);
-    marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
-  }
+trigger: marquee,
+start: "top bottom",
+end: "bottom top",
+onUpdate: (self) => {
+  const isInverted = self.direction === 1;
+  const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
+  animation.timeScale(currentDirection);
+  marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
+}
 });
 
 const tl = gsap.timeline({
-  scrollTrigger: {
-    trigger: marquee,
-    start: "0% 100%",
-    end: "100% 0%",
-    scrub: 0
-  }
+scrollTrigger: {
+  trigger: marquee,
+  start: "0% 100%",
+  end: "100% 0%",
+  scrub: 0
+}
 });
 const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
 const scrollEnd = -scrollStart;
@@ -354,8 +348,8 @@ slidesPerView: 1,
 spaceBetween: 0,
 speed: 800,
 navigation: {
-  nextEl: nextButton,
-  prevEl: prevButton
+nextEl: nextButton,
+prevEl: prevButton
 }
 });
 });
@@ -373,8 +367,8 @@ prevEl: ".button-left.for-rooms"
 },
 breakpoints: {
 991: {
-  slidesPerView: 2,
-  spaceBetween: 50
+slidesPerView: 2,
+spaceBetween: 50
 }
 }
 });
