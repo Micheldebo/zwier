@@ -178,63 +178,42 @@ behavior: "smooth"
 (function () {
 const CookieService = {
 setCookie(name, value, days) {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = "; expires=" + date.toUTCString();
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+const date = new Date();
+date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+const expires = "; expires=" + date.toUTCString();
+document.cookie = name + "=" + (value || "") + expires + "; path=/";
 },
 getCookie(name) {
-  const cookieMatch = document.cookie
+const cookieMatch = document.cookie
     .split('; ')
     .find(row => row.startsWith(name + "="));
-  return cookieMatch ? cookieMatch.split('=')[1] : null;
+return cookieMatch ? cookieMatch.split('=')[1] : null;
 }
 };
 
-// Exit Intent Logic
 const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-if (exitPopup && !CookieService.getCookie('exitIntentShown')) {
+if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
+
 let shown = false;
 
 function showPopup() {
-  if (shown) return;
-  shown = true;
-  exitPopup.style.display = 'flex';
-  CookieService.setCookie('exitIntentShown', true, 30);
-  document.removeEventListener('mouseout', handleMouseOut);
+if (shown) return;
+shown = true;
+exitPopup.style.display = 'flex';
+CookieService.setCookie('exitIntentShown', true, 30);
+document.removeEventListener('mouseout', handleMouseOut);
 }
 
 function handleMouseOut(e) {
-  const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
-  if (isLeavingTop) showPopup();
+const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
+if (isLeavingTop) showPopup();
 }
 
+// Show after 3 seconds if no intent detected yet
 setTimeout(showPopup, 3000);
 document.addEventListener('mouseout', handleMouseOut);
-}
+})();
 
-// -----------------------------------------
-// Corner Popup Logic
-// -----------------------------------------
-
-const cornerPopup = document.querySelector('[corner-popup]');
-if (cornerPopup && !CookieService.getCookie(COOKIE_NAME)) {
-// Show the popup
-cornerPopup.style.display = 'flex';
-
-if (closeBtn) {
-  closeBtn.addEventListener('click', () => {
-    cornerPopup.classList.add('is-closing');
-
-    // Wait for animation to finish before hiding it and setting the cookie
-    setTimeout(() => {
-      cornerPopup.style.display = 'none';
-      CookieService.setCookie(COOKIE_NAME, true, COOKIE_DURATION);
-      cornerPopup.classList.remove('is-closing'); // optional cleanup
-    }, 400); // match the transition duration in CSS
-  });
-}
-    
 
 // -----------------------------------------
 // Window load: Initialize marquee and Swiper sliders
