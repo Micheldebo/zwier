@@ -73,10 +73,10 @@ updateCursor();
 document.querySelectorAll(`.${element.className}`).forEach(function(el) {
 if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, for-booking-food, for-boxed")) {
 el.addEventListener("mouseenter", function() {
-  cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
+cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
 });
 el.addEventListener("mouseleave", function() {
-  cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
+cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
 });
 }
 });
@@ -116,19 +116,19 @@ const label = navLink.querySelector(".label");
 const underline = navLink.querySelector(".underline");
 if (navLink.classList.contains("w--current")) {
 if (label) {
-  label.classList.remove("white");
-  label.classList.add("active");
+label.classList.remove("white");
+label.classList.add("active");
 }
 if (underline) {
-  underline.style.display = "block";
+underline.style.display = "block";
 }
 } else {
 if (label) {
-  label.classList.remove("active");
-  label.classList.add("white");
+label.classList.remove("active");
+label.classList.add("white");
 }
 if (underline) {
-  underline.style.display = "none";
+underline.style.display = "none";
 }
 }
 });
@@ -146,7 +146,7 @@ if (underline) underline.style.display = "block";
 navLink.addEventListener("mouseleave", () => {
 const label = navLink.querySelector(".label");
 if (underline && !label.classList.contains("active")) {
-  underline.style.display = "none";
+underline.style.display = "none";
 }
 });
 });
@@ -158,13 +158,13 @@ if (href && href.startsWith("#")) {
 const targetId = href.substring(1);
 const targetEl = document.getElementById(targetId);
 if (targetEl) {
-  e.preventDefault();
-  const offset = window.innerWidth <= 991 ? 150 : 200;
-  const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-  window.scrollTo({
-    top: elementTop,
-    behavior: "smooth"
-  });
+e.preventDefault();
+const offset = window.innerWidth <= 991 ? 150 : 200;
+const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+window.scrollTo({
+top: elementTop,
+behavior: "smooth"
+});
 }
 }
 });
@@ -176,44 +176,65 @@ if (targetEl) {
 // -----------------------------------------
 
 (function () {
-  const CookieService = {
-      setCookie(name, value, days) {
-          const date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-          const expires = "; expires=" + date.toUTCString();
-          document.cookie = name + "=" + (value || "") + expires + "; path=/";
-      },
-      getCookie(name) {
-          const cookieMatch = document.cookie
-              .split('; ')
-              .find(row => row.startsWith(name + "="));
-          return cookieMatch ? cookieMatch.split('=')[1] : null;
-      }
-  };
+const CookieService = {
+setCookie(name, value, days) {
+  const date = new Date();
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = "; expires=" + date.toUTCString();
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+},
+getCookie(name) {
+  const cookieMatch = document.cookie
+    .split('; ')
+    .find(row => row.startsWith(name + "="));
+  return cookieMatch ? cookieMatch.split('=')[1] : null;
+}
+};
 
-  const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-  if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
+// Exit Intent Logic
+const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
+if (exitPopup && !CookieService.getCookie('exitIntentShown')) {
+let shown = false;
 
-  let shown = false;
+function showPopup() {
+  if (shown) return;
+  shown = true;
+  exitPopup.style.display = 'flex';
+  CookieService.setCookie('exitIntentShown', true, 30);
+  document.removeEventListener('mouseout', handleMouseOut);
+}
 
-  function showPopup() {
-      if (shown) return;
-      shown = true;
-      exitPopup.style.display = 'flex';
-      CookieService.setCookie('exitIntentShown', true, 30);
-      document.removeEventListener('mouseout', handleMouseOut);
-  }
+function handleMouseOut(e) {
+  const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
+  if (isLeavingTop) showPopup();
+}
 
-  function handleMouseOut(e) {
-      const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
-      if (isLeavingTop) showPopup();
-  }
+setTimeout(showPopup, 3000);
+document.addEventListener('mouseout', handleMouseOut);
+}
 
-  // Show after 3 seconds if no intent detected yet
-  setTimeout(showPopup, 3000);
-  document.addEventListener('mouseout', handleMouseOut);
-})();
+// -----------------------------------------
+// Corner Popup Logic
+// -----------------------------------------
 
+const cornerPopup = document.querySelector('[corner-popup]');
+if (cornerPopup && !CookieService.getCookie(COOKIE_NAME)) {
+// Show the popup
+cornerPopup.style.display = 'flex';
+
+if (closeBtn) {
+  closeBtn.addEventListener('click', () => {
+    cornerPopup.classList.add('is-closing');
+
+    // Wait for animation to finish before hiding it and setting the cookie
+    setTimeout(() => {
+      cornerPopup.style.display = 'none';
+      CookieService.setCookie(COOKIE_NAME, true, COOKIE_DURATION);
+      cornerPopup.classList.remove('is-closing'); // optional cleanup
+    }, 400); // match the transition duration in CSS
+  });
+}
+    
 
 // -----------------------------------------
 // Window load: Initialize marquee and Swiper sliders
@@ -240,7 +261,7 @@ marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
 if (duplicateAmount > 0) {
 const fragment = document.createDocumentFragment();
 for (let i = 0; i < duplicateAmount; i++) {
-  fragment.appendChild(marqueeContent.cloneNode(true));
+fragment.appendChild(marqueeContent.cloneNode(true));
 }
 marqueeScroll.appendChild(fragment);
 }
@@ -263,19 +284,19 @@ trigger: marquee,
 start: "top bottom",
 end: "bottom top",
 onUpdate: (self) => {
-  const isInverted = self.direction === 1;
-  const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
-  animation.timeScale(currentDirection);
-  marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
+const isInverted = self.direction === 1;
+const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
+animation.timeScale(currentDirection);
+marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
 }
 });
 
 const tl = gsap.timeline({
 scrollTrigger: {
-  trigger: marquee,
-  start: "0% 100%",
-  end: "100% 0%",
-  scrub: 0
+trigger: marquee,
+start: "0% 100%",
+end: "100% 0%",
+scrub: 0
 }
 });
 const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
