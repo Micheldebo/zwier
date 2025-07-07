@@ -172,47 +172,66 @@ behavior: "smooth"
 })();
 
 // -----------------------------------------
-// Exit Intent Popup
+// Exit Intent + Corner Popup
 // -----------------------------------------
 
 (function () {
+// --- CookieService (unchanged) ---
 const CookieService = {
 setCookie(name, value, days) {
-const date = new Date();
-date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-const expires = "; expires=" + date.toUTCString();
-document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  const date = new Date();
+  date.setTime(date.getTime() + days * 864e5);
+  document.cookie = name + "=" + (value || "") +
+                    "; expires=" + date.toUTCString() +
+                    "; path=/";
 },
 getCookie(name) {
-const cookieMatch = document.cookie
-    .split('; ')
+  const match = document.cookie
+    .split("; ")
     .find(row => row.startsWith(name + "="));
-return cookieMatch ? cookieMatch.split('=')[1] : null;
+  return match ? match.split("=")[1] : null;
 }
 };
 
+// --- Exit Intent Popup (your original) ---
 const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
-
+if (exitPopup && !CookieService.getCookie('exitIntentShown')) {
 let shown = false;
-
 function showPopup() {
-if (shown) return;
-shown = true;
-exitPopup.style.display = 'flex';
-CookieService.setCookie('exitIntentShown', true, 30);
-document.removeEventListener('mouseout', handleMouseOut);
+  if (shown) return;
+  shown = true;
+  exitPopup.style.display = 'flex';
+  CookieService.setCookie('exitIntentShown', true, 30);
+  document.removeEventListener('mouseout', handleMouseOut);
 }
-
 function handleMouseOut(e) {
-const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
-if (isLeavingTop) showPopup();
+  if (!e.toElement && !e.relatedTarget && e.clientY < 10) {
+    showPopup();
+  }
 }
-
-// Show after 3 seconds if no intent detected yet
 setTimeout(showPopup, 3000);
 document.addEventListener('mouseout', handleMouseOut);
+}
+
+// --- Corner Popup Logic (new) ---
+const cornerPopup = document.querySelector('[corner-popup]');
+if (cornerPopup && !CookieService.getCookie('cornerPopupClosed')) {
+// show immediately
+cornerPopup.style.display = 'flex';
+
+// wire up close button
+const closeBtn = cornerPopup.querySelector('[corner-popup-close]');
+if (closeBtn) {
+  closeBtn.addEventListener('click', () => {
+    cornerPopup.style.display = 'none';
+    CookieService.setCookie('cornerPopupClosed', true, 30);
+  });
+} else {
+  console.warn('No [corner-popup-close] button found inside [corner-popup]');
+}
+}
 })();
+
 
 
 // -----------------------------------------
