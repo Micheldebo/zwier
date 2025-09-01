@@ -71,12 +71,12 @@ updateCursor();
 
 // Set hover effects for elements (only for .for-rooms, .for-gallery, or .for-boxed and excluding .for-reviews or for-booking-food)
 document.querySelectorAll(`.${element.className}`).forEach(function(el) {
-if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, for-booking-food, for-boxed")) {
+if (el.closest(".for-rooms, .for-gallery") && !el.closest(".for-reviews, .for-booking-food, .for-boxed")) {
 el.addEventListener("mouseenter", function() {
-  cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
+cursorImage.style.transform = "translate(-50%, -50%) scale(1)";
 });
 el.addEventListener("mouseleave", function() {
-  cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
+cursorImage.style.transform = "translate(-50%, -50%) scale(0)";
 });
 }
 });
@@ -116,19 +116,19 @@ const label = navLink.querySelector(".label");
 const underline = navLink.querySelector(".underline");
 if (navLink.classList.contains("w--current")) {
 if (label) {
-  label.classList.remove("white");
-  label.classList.add("active");
+label.classList.remove("white");
+label.classList.add("active");
 }
 if (underline) {
-  underline.style.display = "block";
+underline.style.display = "block";
 }
 } else {
 if (label) {
-  label.classList.remove("active");
-  label.classList.add("white");
+label.classList.remove("active");
+label.classList.add("white");
 }
 if (underline) {
-  underline.style.display = "none";
+underline.style.display = "none";
 }
 }
 });
@@ -146,7 +146,7 @@ if (underline) underline.style.display = "block";
 navLink.addEventListener("mouseleave", () => {
 const label = navLink.querySelector(".label");
 if (underline && !label.classList.contains("active")) {
-  underline.style.display = "none";
+underline.style.display = "none";
 }
 });
 });
@@ -158,13 +158,13 @@ if (href && href.startsWith("#")) {
 const targetId = href.substring(1);
 const targetEl = document.getElementById(targetId);
 if (targetEl) {
-  e.preventDefault();
-  const offset = window.innerWidth <= 991 ? 150 : 200;
-  const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-  window.scrollTo({
-    top: elementTop,
-    behavior: "smooth"
-  });
+e.preventDefault();
+const offset = window.innerWidth <= 991 ? 150 : 200;
+const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
+window.scrollTo({
+  top: elementTop,
+  behavior: "smooth"
+});
 }
 }
 });
@@ -176,42 +176,42 @@ if (targetEl) {
 // -----------------------------------------
 
 (function () {
-  const CookieService = {
-      setCookie(name, value, days) {
-          const date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-          const expires = "; expires=" + date.toUTCString();
-          document.cookie = name + "=" + (value || "") + expires + "; path=/";
-      },
-      getCookie(name) {
-          const cookieMatch = document.cookie
-              .split('; ')
-              .find(row => row.startsWith(name + "="));
-          return cookieMatch ? cookieMatch.split('=')[1] : null;
-      }
-  };
+const CookieService = {
+    setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "; expires=" + date.toUTCString();
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    },
+    getCookie(name) {
+        const cookieMatch = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(name + "="));
+        return cookieMatch ? cookieMatch.split('=')[1] : null;
+    }
+};
 
-  const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
-  if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
+const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
+if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
 
-  let shown = false;
+let shown = false;
 
-  function showPopup() {
-      if (shown) return;
-      shown = true;
-      exitPopup.style.display = 'flex';
-      CookieService.setCookie('exitIntentShown', true, 30);
-      document.removeEventListener('mouseout', handleMouseOut);
-  }
+function showPopup() {
+    if (shown) return;
+    shown = true;
+    exitPopup.style.display = 'flex';
+    CookieService.setCookie('exitIntentShown', true, 30);
+    document.removeEventListener('mouseout', handleMouseOut);
+}
 
-  function handleMouseOut(e) {
-      const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
-      if (isLeavingTop) showPopup();
-  }
+function handleMouseOut(e) {
+    const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
+    if (isLeavingTop) showPopup();
+}
 
-  // Show after 3 seconds if no intent detected yet
-  setTimeout(showPopup, 3000);
-  document.addEventListener('mouseout', handleMouseOut);
+// Show after 3 seconds if no intent detected yet
+setTimeout(showPopup, 3000);
+document.addEventListener('mouseout', handleMouseOut);
 })();
 
 
@@ -240,7 +240,7 @@ marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
 if (duplicateAmount > 0) {
 const fragment = document.createDocumentFragment();
 for (let i = 0; i < duplicateAmount; i++) {
-  fragment.appendChild(marqueeContent.cloneNode(true));
+fragment.appendChild(marqueeContent.cloneNode(true));
 }
 marqueeScroll.appendChild(fragment);
 }
@@ -263,19 +263,19 @@ trigger: marquee,
 start: "top bottom",
 end: "bottom top",
 onUpdate: (self) => {
-  const isInverted = self.direction === 1;
-  const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
-  animation.timeScale(currentDirection);
-  marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
+const isInverted = self.direction === 1;
+const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
+animation.timeScale(currentDirection);
+marquee.setAttribute("data-marquee-status", isInverted ? "normal" : "inverted");
 }
 });
 
 const tl = gsap.timeline({
 scrollTrigger: {
-  trigger: marquee,
-  start: "0% 100%",
-  end: "100% 0%",
-  scrub: 0
+trigger: marquee,
+start: "0% 100%",
+end: "100% 0%",
+scrub: 0
 }
 });
 const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
@@ -354,23 +354,68 @@ prevEl: prevButton
 });
 });
 
-// Rooms slider with breakpoints
-new Swiper(".swiper.is-rooms", {
-loop: true,
-slidesPerView: 1,
-spaceBetween: 0,
-speed: 800,
-centeredSlides: true,
-navigation: {
-nextEl: ".button-right.for-rooms",
-prevEl: ".button-left.for-rooms"
-},
-breakpoints: {
-991: {
-slidesPerView: 2,
-spaceBetween: 50
-}
-}
+// --- Rooms slider: init when visible & sized ---
+const roomsEl = document.querySelector(".swiper.is-rooms");
+if (roomsEl) {
+// Build Swiper but don't init yet
+const roomsSwiper = new Swiper(roomsEl, {
+  init: false,
+  loop: true,
+  centeredSlides: true,
+  slidesPerView: 1,
+  spaceBetween: 0,
+  speed: 800,
+
+  // keep Swiper in sync with late layout changes
+  observer: true,
+  observeParents: true,
+  preloadImages: false,
+  lazy: true,
+  updateOnWindowResize: true,
+  watchSlidesProgress: true,
+  loopAdditionalSlides: 3, // important with loop + centered
+
+  navigation: {
+    nextEl: ".button-right.for-rooms",
+    prevEl: ".button-left.for-rooms"
+  },
+  breakpoints: {
+    991: {
+      slidesPerView: 2,
+      spaceBetween: 50
+    }
+  },
+  on: {
+    imagesReady(sw) {
+      sw.update();
+    }
+  }
 });
+
+function readyToInit(el) {
+  const cs = getComputedStyle(el);
+  return el.offsetWidth > 0 && cs.display !== "none" && cs.visibility !== "hidden";
+}
+
+function mountWhenReady() {
+  if (readyToInit(roomsEl)) {
+    roomsSwiper.init();
+    roomsSwiper.update();
+    roomsSwiper.slideToLoop(1, 0, false); // show “next” on load
+  } else {
+    requestAnimationFrame(mountWhenReady);
+  }
+}
+
+window.addEventListener("load", mountWhenReady);
+
+// If this section gets revealed later (tab/IX), re-measure:
+document.addEventListener("wf-section-shown", () => { // or your own reveal event
+  if (roomsSwiper.initialized) {
+    roomsSwiper.update();
+    roomsSwiper.slideToLoop(1, 0, false);
+  }
+});
+}
 });
 });
