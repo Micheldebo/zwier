@@ -407,7 +407,7 @@ function mountWhenReady() {
   }
 }
 
-window.addEventListener("load", mountWhenReady);
+mountWhenReady();
 
 // If this section gets revealed later (tab/IX), re-measure:
 document.addEventListener("wf-section-shown", () => { // or your own reveal event
