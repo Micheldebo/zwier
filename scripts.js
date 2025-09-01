@@ -354,46 +354,5 @@ prevEl: prevButton
 });
 });
 
-// --- Rooms slider (stable first paint) ---
-const roomsEl = document.querySelector(".swiper.is-rooms");
-if (roomsEl) {
-const roomsSwiper = new Swiper(roomsEl, {
-// start where “click next” would land
-initialSlide: 1,
-
-// core
-loop: true,
-loopedSlides: 3,            // you have 3 real slides
-centeredSlides: true,
-roundLengths: true,         // avoid half-pixel widths/offsets
-
-// layout
-slidesPerView: 1,
-spaceBetween: 0,
-speed: 800,
-breakpoints: {
-991: { slidesPerView: 2, spaceBetween: 50 }
-},
-
-// stay resilient to late layout changes
-observer: true,
-observeParents: true,
-preloadImages: false,
-lazy: true,
-updateOnWindowResize: true,
-
-navigation: {
-nextEl: ".button-right.for-rooms",
-prevEl: ".button-left.for-rooms"
-}
-});
-
-// one quiet normalize pass after first frame
-requestAnimationFrame(() => {
-roomsSwiper.update();
-roomsSwiper.updateSlidesClasses();
-roomsSwiper.slideTo(roomsSwiper.activeIndex, 0, false);
-});
-}
-});
-});
+// Rooms slider with breakpoints
+new Swiper(".swiper.is-rooms", { loop: true, slidesPerView: 2, spaceBetween: 0, speed: 800, centeredSlides: true, navigation: { nextEl: ".button-right.for-rooms", prevEl: ".button-left.for-rooms" }, breakpoints: { 991: { slidesPerView: 2, spaceBetween: 50 } } }); }); });
