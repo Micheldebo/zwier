@@ -178,16 +178,16 @@ behavior: "smooth"
 (function () {
 const CookieService = {
 setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "; expires=" + date.toUTCString();
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+const date = new Date();
+date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+const expires = "; expires=" + date.toUTCString();
+document.cookie = name + "=" + (value || "") + expires + "; path=/";
 },
 getCookie(name) {
-    const cookieMatch = document.cookie
-        .split('; ')
-        .find(row => row.startsWith(name + "="));
-    return cookieMatch ? cookieMatch.split('=')[1] : null;
+const cookieMatch = document.cookie
+.split('; ')
+.find(row => row.startsWith(name + "="));
+return cookieMatch ? cookieMatch.split('=')[1] : null;
 }
 };
 
@@ -354,91 +354,45 @@ prevEl: prevButton
 });
 });
 
-// --- Rooms slider (prime → rebuild) ---
+// --- Rooms slider (stable first paint) ---
 const roomsEl = document.querySelector(".swiper.is-rooms");
 if (roomsEl) {
-let roomsSwiper;
+const roomsSwiper = new Swiper(roomsEl, {
+// start where “click next” would land
+initialSlide: 1,
 
-const baseOpts = {
+// core
+loop: true,
+loopedSlides: 3,            // you have 3 real slides
+centeredSlides: true,
+roundLengths: true,         // avoid half-pixel widths/offsets
+
+// layout
 slidesPerView: 1,
 spaceBetween: 0,
 speed: 800,
-// keep in sync if parents/images/fonts change size
+breakpoints: {
+991: { slidesPerView: 2, spaceBetween: 50 }
+},
+
+// stay resilient to late layout changes
 observer: true,
 observeParents: true,
 preloadImages: false,
 lazy: true,
 updateOnWindowResize: true,
-// note: watchSlidesProgress can cause odd classes on first paint; leave it off
+
 navigation: {
-  nextEl: ".button-right.for-rooms",
-  prevEl: ".button-left.for-rooms"
-},
-breakpoints: {
-  991: { slidesPerView: 2, spaceBetween: 50 }
+nextEl: ".button-right.for-rooms",
+prevEl: ".button-left.for-rooms"
 }
-};
-
-// 1) Prime pass: no loop, no centeredSlides (stable order & widths)
-const prime = new Swiper(roomsEl, {
-...baseOpts,
-loop: false,
-centeredSlides: false
 });
 
-// 2) After layout settles, rebuild with your intended features
-function rebuildFinal() {
-// safety: if already rebuilt, skip
-if (roomsSwiper) return;
-
-// refresh measurements one last time
-prime.updateSize();
-prime.updateSlides();
-prime.updateProgress();
-
-// destroy prime (cleanup DOM changes cleanly)
-prime.destroy(true, true);
-
-// final build: loop + centeredSlides
-roomsSwiper = new Swiper(roomsEl, {
-  ...baseOpts,
-  loop: true,
-  centeredSlides: true,
-  loopAdditionalSlides: 3,          // important with centered + few slides
-  // normalize on init & when images finish
-  on: {
-    init(s) {
-      s.updateSize();
-      s.updateSlides();
-      s.updateProgress();
-      s.setTranslate(0);
-      if (s.slides.length > 1) s.slideToLoop(1, 0, false); // show “next” on right
-    },
-    imagesReady(s) {
-      s.update();
-      if (s.slides.length > 1) s.slideToLoop(1, 0, false);
-    },
-    resize(s) {
-      s.update();
-    }
-  }
-});
-}
-
-// Let layout fully resolve before rebuilding
-// (two RAFs + microtask covers Webflow IX, fonts, image sizing)
+// one quiet normalize pass after first frame
 requestAnimationFrame(() => {
-requestAnimationFrame(() => {
-  Promise.resolve().then(rebuildFinal);
-});
-});
-
-// If the section is revealed by an interaction later, ensure it's correct
-document.addEventListener("wf-section-shown", () => {
-if (roomsSwiper) {
-  roomsSwiper.update();
-  roomsSwiper.slideToLoop(1, 0, false);
-}
+roomsSwiper.update();
+roomsSwiper.updateSlidesClasses();
+roomsSwiper.slideTo(roomsSwiper.activeIndex, 0, false);
 });
 }
 });
