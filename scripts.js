@@ -162,8 +162,8 @@ e.preventDefault();
 const offset = window.innerWidth <= 991 ? 150 : 200;
 const elementTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
 window.scrollTo({
-  top: elementTop,
-  behavior: "smooth"
+top: elementTop,
+behavior: "smooth"
 });
 }
 }
@@ -177,18 +177,18 @@ window.scrollTo({
 
 (function () {
 const CookieService = {
-    setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = "; expires=" + date.toUTCString();
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    },
-    getCookie(name) {
-        const cookieMatch = document.cookie
-            .split('; ')
-            .find(row => row.startsWith(name + "="));
-        return cookieMatch ? cookieMatch.split('=')[1] : null;
-    }
+setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "; expires=" + date.toUTCString();
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+},
+getCookie(name) {
+    const cookieMatch = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(name + "="));
+    return cookieMatch ? cookieMatch.split('=')[1] : null;
+}
 };
 
 const exitPopup = document.querySelector('[ms-code-popup="exit-intent"]');
@@ -197,16 +197,16 @@ if (!exitPopup || CookieService.getCookie('exitIntentShown')) return;
 let shown = false;
 
 function showPopup() {
-    if (shown) return;
-    shown = true;
-    exitPopup.style.display = 'flex';
-    CookieService.setCookie('exitIntentShown', true, 30);
-    document.removeEventListener('mouseout', handleMouseOut);
+if (shown) return;
+shown = true;
+exitPopup.style.display = 'flex';
+CookieService.setCookie('exitIntentShown', true, 30);
+document.removeEventListener('mouseout', handleMouseOut);
 }
 
 function handleMouseOut(e) {
-    const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
-    if (isLeavingTop) showPopup();
+const isLeavingTop = !e.toElement && !e.relatedTarget && e.clientY < 10;
+if (isLeavingTop) showPopup();
 }
 
 // Show after 3 seconds if no intent detected yet
@@ -354,67 +354,91 @@ prevEl: prevButton
 });
 });
 
-// --- Rooms slider: init when visible & sized ---
+// --- Rooms slider (prime → rebuild) ---
 const roomsEl = document.querySelector(".swiper.is-rooms");
 if (roomsEl) {
-// Build Swiper but don't init yet
-const roomsSwiper = new Swiper(roomsEl, {
-  init: false,
+let roomsSwiper;
+
+const baseOpts = {
+slidesPerView: 1,
+spaceBetween: 0,
+speed: 800,
+// keep in sync if parents/images/fonts change size
+observer: true,
+observeParents: true,
+preloadImages: false,
+lazy: true,
+updateOnWindowResize: true,
+// note: watchSlidesProgress can cause odd classes on first paint; leave it off
+navigation: {
+  nextEl: ".button-right.for-rooms",
+  prevEl: ".button-left.for-rooms"
+},
+breakpoints: {
+  991: { slidesPerView: 2, spaceBetween: 50 }
+}
+};
+
+// 1) Prime pass: no loop, no centeredSlides (stable order & widths)
+const prime = new Swiper(roomsEl, {
+...baseOpts,
+loop: false,
+centeredSlides: false
+});
+
+// 2) After layout settles, rebuild with your intended features
+function rebuildFinal() {
+// safety: if already rebuilt, skip
+if (roomsSwiper) return;
+
+// refresh measurements one last time
+prime.updateSize();
+prime.updateSlides();
+prime.updateProgress();
+
+// destroy prime (cleanup DOM changes cleanly)
+prime.destroy(true, true);
+
+// final build: loop + centeredSlides
+roomsSwiper = new Swiper(roomsEl, {
+  ...baseOpts,
   loop: true,
   centeredSlides: true,
-  slidesPerView: 1,
-  spaceBetween: 0,
-  speed: 800,
-
-  // keep Swiper in sync with late layout changes
-  observer: true,
-  observeParents: true,
-  preloadImages: false,
-  lazy: true,
-  updateOnWindowResize: true,
-  watchSlidesProgress: true,
-  loopAdditionalSlides: 3, // important with loop + centered
-
-  navigation: {
-    nextEl: ".button-right.for-rooms",
-    prevEl: ".button-left.for-rooms"
-  },
-  breakpoints: {
-    991: {
-      slidesPerView: 2,
-      spaceBetween: 50
-    }
-  },
+  loopAdditionalSlides: 3,          // important with centered + few slides
+  // normalize on init & when images finish
   on: {
-    imagesReady(sw) {
-      sw.update();
+    init(s) {
+      s.updateSize();
+      s.updateSlides();
+      s.updateProgress();
+      s.setTranslate(0);
+      if (s.slides.length > 1) s.slideToLoop(1, 0, false); // show “next” on right
+    },
+    imagesReady(s) {
+      s.update();
+      if (s.slides.length > 1) s.slideToLoop(1, 0, false);
+    },
+    resize(s) {
+      s.update();
     }
   }
 });
-
-function readyToInit(el) {
-  const cs = getComputedStyle(el);
-  return el.offsetWidth > 0 && cs.display !== "none" && cs.visibility !== "hidden";
 }
 
-function mountWhenReady() {
-  if (readyToInit(roomsEl)) {
-    roomsSwiper.init();
-    roomsSwiper.update();
-    roomsSwiper.slideToLoop(1, 0, false); // show “next” on load
-  } else {
-    requestAnimationFrame(mountWhenReady);
-  }
+// Let layout fully resolve before rebuilding
+// (two RAFs + microtask covers Webflow IX, fonts, image sizing)
+requestAnimationFrame(() => {
+requestAnimationFrame(() => {
+  Promise.resolve().then(rebuildFinal);
+});
+});
+
+// If the section is revealed by an interaction later, ensure it's correct
+document.addEventListener("wf-section-shown", () => {
+if (roomsSwiper) {
+  roomsSwiper.update();
+  roomsSwiper.slideToLoop(1, 0, false);
 }
-
-mountWhenReady();
-
-// If this section gets revealed later (tab/IX), re-measure:
-document.addEventListener("wf-section-shown", () => { // or your own reveal event
-  if (roomsSwiper.initialized) {
-    roomsSwiper.update();
-    roomsSwiper.slideToLoop(1, 0, false);
-  }
 });
 }
 });
