@@ -763,7 +763,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initMarqueeScrollDirection();
 
     // Init all non-gallery Swipers on window load
-    initGallery();
     initBoxedSliders();
     initReviewsSlider();
     initBookingFoodSlider();
