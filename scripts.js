@@ -620,11 +620,6 @@ document.addEventListener("DOMContentLoaded", function () {
   handleSupervisorStyles();
   applyGridStyles();
 
-  // 2) Init gallery after layout settles
-  requestAnimationFrame(() => {
-    setTimeout(() => initGallery(), 0);
-  });
-
   // Re-apply styles on resize (debounced). No Swiper re-init.
   let resizeTO;
   window.addEventListener("resize", () => {
