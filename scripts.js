@@ -16,24 +16,26 @@ window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 // -----------------------------------------
 let lenis = null;
 if (!isTouch && !prefersReduced) {
-// ✅ Non-touch: enable Lenis
-lenis = new Lenis();
-// Expose for debugging / hot reload safety
-window.__lenis = lenis;
+  // ✅ Non-touch: enable Lenis
+  lenis = new Lenis({
+    lerp: 0.12,
+  });
+  // Expose for debugging / hot reload safety
+  window.__lenis = lenis;
 
-lenis.on("scroll", ScrollTrigger.update);
-gsap.ticker.add((time) => {
-  lenis.raf(time * 1000);
-});
-gsap.ticker.lagSmoothing(0);
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
 } else {
-// ❌ Touch or reduced motion: ensure native scroll
-if (window.__lenis && typeof window.__lenis.destroy === "function") {
-  try { window.__lenis.destroy(); } catch (e) {}
-  window.__lenis = null;
-}
-// Keep ScrollTrigger synced
-ScrollTrigger.update();
+  // ❌ Touch or reduced motion: ensure native scroll
+  if (window.__lenis && typeof window.__lenis.destroy === "function") {
+    try { window.__lenis.destroy(); } catch (e) {}
+    window.__lenis = null;
+  }
+  // Keep ScrollTrigger synced
+  ScrollTrigger.update();
 }
 
 // -----------------------------------------
